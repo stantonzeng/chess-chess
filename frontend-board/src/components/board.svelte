@@ -9,7 +9,7 @@
 			this.vertSize = 8;
 			this.horzSize = 8;
 			this.numUniquePieces = 12;
-			this.vertAxis = ["1", "2", "3", "4", "5", "6", "7", "8"];
+			this.vertAxis = ["8", "7", "6", "5", "4", "3", "2", "1"];
 			this.horzAxis = ["a", "b", "c", "d", "e", "f", "g", "h"];
 			this.totalSize = this.vertSize * this.horzSize;
 			this.developBoard();
@@ -41,24 +41,57 @@
 		}
 	};
 	
+	class mouseDrag {
+		constructor(){
+			this.draggedPiece = 'none';
+		}
+	}
+	
 	const board_1 = new Board();
+	const mouseDrag_1 = new mouseDrag();
+
+	/******************************************************************/
+	
+	let piece_temp = 'None';
+	/**
+	 * @param {any} e
+	 */
+	 function handleDragStart(e) {
+		mouseDrag_1.draggedPiece = e.target.id;
+		piece_temp = mouseDrag_1.draggedPiece;
+		e.dataTransfer.dropEffect = "move";
+    }
+	/**
+	 * @param {any} e
+	 */
+	 function handleDragEnd(e) {
+		console.log("Letting go of piece", mouseDrag_1.draggedPiece);
+		mouseDrag_1.draggedPiece = 'none';
+		piece_temp = mouseDrag_1.draggedPiece;
+    }
 	
 </script>
 
 <div class = "board_and_pieces">
-	<div class = "board">
+	<h2> Dragging Piece : {piece_temp}</h2>
+	<div 
+	class = "board">
 		<!--This if statement is used just to remove the undefined board1 error-->
 		{#if board_1.boardLabels}
 			<!--Loop through the boardLabels and assign them to each tile-->
 			{#each board_1.boardLabels as bl}
-				<Tile nme = {bl.lbl} clr = {bl.clr}/>
+				<Tile name = {bl.lbl} color = {bl.clr} bind:pieceType = {mouseDrag_1.draggedPiece}/>
 			{/each}
 		{/if}
 	</div>
 	<!--This holds the pieces grid and centers it-->
 	<div class = "pieces">
 		<!--Grids the pieces on the side-->
-		<div class = "pieces_grid">
+		<div 
+		class = "pieces_grid" 
+		draggable="true" 
+		on:dragstart={handleDragStart}
+		on:dragend={handleDragEnd} >
 			{#if board_1.uniquePiecesList}
 				{#each board_1.uniquePiecesList as pl}
 					<Pieces ind = {pl}/>

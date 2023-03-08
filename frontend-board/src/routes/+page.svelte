@@ -20,6 +20,6 @@
 		width: 100vw;
 		display: flex;
 		place-content: center;
-		background-color: rgb(42, 42, 42);
+		background-color: rgb(255, 255, 255);
 	}
 </style>
