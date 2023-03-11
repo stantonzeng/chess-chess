@@ -12,7 +12,7 @@
     import BlackRook from './pieces/Chess_rdt60.png' 
     import WhiteRook from './pieces/Chess_rlt60.png'
     
-    class pieceID {
+    class Pieces {
         constructor(){
             this.pieceHolder = [BlackBishop, WhiteBishop, BlackKing, WhiteKing, BlackKnight,
                 WhiteKnight, BlackPawn, WhitePawn, BlackQueen, WhiteQueen, BlackRook, WhiteRook];
@@ -29,22 +29,21 @@
             }
         }
     }
-
-    export const pieceIDs = new pieceID();
+    export const pieces = new Pieces();
 </script>
 
 <script>
-    export let ind;
+    export let index;
 
     const piece = {
-        pieceType: pieceIDs.pieceHolder[ind],
-        pieceName: pieceIDs.pieceHolderName[ind]
+        pieceType: pieces.pieceHolder[index],
+        pieceName: pieces.pieceHolderName[index]
     }
 
 </script>
 
 <div class = "pieces_section">
-    <img id = {piece.pieceName} src = {piece.pieceType} alt = {piece.pieceName}/>
+        <img id = {piece.pieceName} src = {piece.pieceType} alt = {piece.pieceName}/>
 </div>
 
 <style>

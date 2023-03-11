@@ -1,6 +1,8 @@
 <script>
 	import Tile from './board_components/tile.svelte';
-	import Pieces from './board_components/pieces.svelte';
+	import Pieces from './board_components/pieceSetup.svelte';
+	import { get } from 'svelte/store';
+	import { draggedPiece, handleDragStart, handleDragEnd } from './drag';
 	/**
 	 * Holds the axis labels and amount. Develops itself
 	 */
@@ -41,64 +43,47 @@
 		}
 	};
 	
-	class mouseDrag {
-		constructor(){
-			this.draggedPiece = 'none';
-		}
-	}
-	
+
 	const board_1 = new Board();
-	const mouseDrag_1 = new mouseDrag();
 
 	/******************************************************************/
-	
-	let piece_temp = 'None';
-	/**
-	 * @param {any} e
-	 */
-	 function handleDragStart(e) {
-		mouseDrag_1.draggedPiece = e.target.id;
-		piece_temp = mouseDrag_1.draggedPiece;
-		e.dataTransfer.dropEffect = "move";
-    }
-	/**
-	 * @param {any} e
-	 */
-	 function handleDragEnd(e) {
-		console.log("Letting go of piece", mouseDrag_1.draggedPiece);
-		mouseDrag_1.draggedPiece = 'none';
-		piece_temp = mouseDrag_1.draggedPiece;
-    }
-	
+	let pieceBeingDragged = 'None';
+	draggedPiece.subscribe((_draggedPiece) => pieceBeingDragged = _draggedPiece);
 </script>
 
 <div class = "board_and_pieces">
-	<h2> Dragging Piece : {piece_temp}</h2>
-	<div 
-	class = "board">
+	<h2> Dragging Piece : {pieceBeingDragged}</h2>
+	<!------------------------------TILES START------------------------------>
+	<div class = "board">
 		<!--This if statement is used just to remove the undefined board1 error-->
 		{#if board_1.boardLabels}
 			<!--Loop through the boardLabels and assign them to each tile-->
 			{#each board_1.boardLabels as bl}
-				<Tile name = {bl.lbl} color = {bl.clr} bind:pieceType = {mouseDrag_1.draggedPiece}/>
+				<Tile name = {bl.lbl} color = {bl.clr} bind:draggedPieceType = {pieceBeingDragged}/>
 			{/each}
 		{/if}
 	</div>
+	<!------------------------------TILES END------------------------------>
+
+
+	<!------------------------------PIECES START------------------------------>
 	<!--This holds the pieces grid and centers it-->
 	<div class = "pieces">
 		<!--Grids the pieces on the side-->
 		<div 
-		class = "pieces_grid" 
+		class = "pieces_grid"
 		draggable="true" 
 		on:dragstart={handleDragStart}
-		on:dragend={handleDragEnd} >
+		on:dragend={handleDragEnd}
+	 	>
 			{#if board_1.uniquePiecesList}
 				{#each board_1.uniquePiecesList as pl}
-					<Pieces ind = {pl}/>
+					<Pieces index = {pl}/>
 				{/each}
 			{/if}
 		</div>
 	</div>	
+	<!------------------------------PIECES END------------------------------>
 </div>
 
 <style>
