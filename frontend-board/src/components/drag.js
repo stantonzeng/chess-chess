@@ -1,7 +1,6 @@
 import { writable, get } from "svelte/store";
 
 export let draggedPiece = writable('None');
-export let droppable = writable(false);
 
 /**
  * @param {any} e
@@ -42,17 +41,4 @@ export function handleDragLeave(e) {
  */
 export function handleDragOver(e) {
     e.preventDefault();
-}
-/**
- * @param {any} e
- * @param {any} pieces
- */
-export function handleDragDrop(e, pieces) {
-    console.log("Dropped on ", e.target.getAttribute('id'), " with ", get(draggedPiece));
-    console.log(pieces.pieceMap?.get(`${get(draggedPiece)}`));
-    e.preventDefault();
-    // draggedPiece.set(get(draggedPiece));
-    if(get(draggedPiece) != 'None') {
-        droppable.set(true);
-    }
 }

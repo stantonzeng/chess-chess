@@ -1,7 +1,6 @@
 <script>
 	import Tile from './board_components/tile.svelte';
 	import Pieces from './board_components/pieceSetup.svelte';
-	import { get } from 'svelte/store';
 	import { draggedPiece, handleDragStart, handleDragEnd } from './drag';
 	/**
 	 * Holds the axis labels and amount. Develops itself

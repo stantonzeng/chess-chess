@@ -1,6 +1,6 @@
 <script>
     import { pieces } from "./pieceSetup.svelte";
-    import { draggedPiece, droppable, handleDragEnter, handleDragLeave, handleDragOver, handleDragDrop } from "../drag";
+    import { handleDragEnter, handleDragLeave, handleDragOver } from "../drag";
     /**
      * @type {string}
      */
@@ -15,14 +15,24 @@
      * @type {string}
      */
      export let draggedPieceType;
-    //todo figure out why dropping piece on board is not working
-    /******************************************************************/
-    let pieceBeingDragged = 'None';
-    let pieceBeingDropped = false;
-	draggedPiece.subscribe((_draggedPiece) => pieceBeingDragged = _draggedPiece);
-    droppable.subscribe((_pieceBeingDropped) => pieceBeingDropped = _pieceBeingDropped);
 
-    
+    /**
+	 * @type {string}
+	 */
+    let dragPiece;
+    let droppable = false;
+    /**
+     * @param {any} e
+     */
+    function customHandleDragDrop(e) {
+        console.log("Dropped on ", e.target.getAttribute('id'), " with ", draggedPieceType);
+        e.preventDefault();
+        if(draggedPieceType != 'None') {
+            droppable = true;
+            dragPiece = draggedPieceType;
+        }
+    }
+
 </script>
 
     <div 
@@ -30,15 +40,14 @@
     class = "tile {color}"
     on:dragenter={handleDragEnter}
     on:dragleave={handleDragLeave}
-    on:drop={(e) => 
-    {handleDragDrop(e, pieces)}}
+    on:drop={customHandleDragDrop}
     on:dragover={handleDragOver}
     >
-        {#if pieceBeingDropped}
+        {#if droppable}
             <img 
-            id = {draggedPieceType} 
-            src = {pieces.pieceMap?.get(`${draggedPieceType}`)} 
-            alt = "test"
+            id = {dragPiece} 
+            src = {pieces.pieceMap?.get(`${dragPiece}`)} 
+            alt = {dragPiece}
             draggable = "true"/>
         {/if}
     </div>
