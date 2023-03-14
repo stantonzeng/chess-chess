@@ -34,3 +34,44 @@ class Pieces {
 }
 
 export const piecesID = new Pieces();
+
+let tempStylePosition = '';
+
+let activeGrabPiece: HTMLElement | null = null;
+
+/**
+ * @param {any} e
+ */
+export function customHandleMouseDown(e: { clientX: any; clientY: any; offsetX: any; offsetY: any; target: any; }, pieceKeyID: string){
+    let pce = document.getElementsByClassName(pieceKeyID) as HTMLCollectionOf<HTMLElement>;
+    tempStylePosition = pce[0].style.position;
+    pce[0].style.position = "absolute";
+    pce[0].style.left = `${e.clientX - 30}px`;
+    pce[0].style.top = `${e.clientY - 30}px`;
+    activeGrabPiece = pce[0];
+} 
+
+/**
+ * @param {any} e
+ */
+export function customHandleMouseMove(e: { clientX: any; clientY: any; offsetX: any; offsetY: any; target: any; }){
+    if(activeGrabPiece)
+    {
+        tempStylePosition = activeGrabPiece.style.position;
+        activeGrabPiece.style.position = "absolute";
+        activeGrabPiece.style.left = `${e.clientX - 30}px`;
+        activeGrabPiece.style.top = `${e.clientY - 30}px`;
+    }
+    
+} 
+
+/**
+ * @param {any} e
+ */
+export function customHandleMouseUp(e: { clientX: any; clientY: any; offsetX: any; offsetY: any; target: any; }){
+    if(activeGrabPiece){
+        activeGrabPiece.style.position = tempStylePosition;
+        activeGrabPiece = null;
+    }   
+    
+} 
