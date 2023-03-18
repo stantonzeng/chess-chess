@@ -16,6 +16,8 @@ for(let i = 0; i < piecesID.pieceHolderNameUnderscore.length; i++){
 
 /* --------------------------------WRITTABLE VARIABLES END-------------------------------- */
 
+
+
 /* --------------------------------WRITTABLES START-------------------------------- */
 
 export let piecesCount = writable(pieceMap);
@@ -26,15 +28,50 @@ export let pieceTarget = writable(htmlImgEle);
 
 /* --------------------------------WRITTABLES END-------------------------------- */
 
+
+
 /* --------------------------------FUNCTIONS START-------------------------------- */
+
+/**
+ * @param {string} classString
+ * Recreates the class string, but adds the correct number at the end
+ * e.g: black_bishop_0 -> black_bishop_1 using this function.
+ */
+function findPieceTypeNumber(classString){
+    const isSideClass = classString.slice(0, 4);
+    if(isSideClass === "side"){
+        const pieceType = classString.slice(11, 23);
+        let newClassString = classString.slice(5, 24);
+        return newClassString.concat(get(piecesCount).get(pieceType).toString());
+    }
+    return classString;
+}
+
+/**
+	 * @param {any} pieceTarget
+     * Deep copy of the HtmlImageElement
+	 */
+function copyElementOver(pieceTarget){
+    let imgElem = document.createElement("img");
+    imgElem.className = findPieceTypeNumber(pieceTarget.getAttribute('class'));
+    imgElem.id = pieceTarget.getAttribute('id');
+    imgElem.src = pieceTarget.getAttribute('src');
+    imgElem.alt = pieceTarget.getAttribute('alt');
+    imgElem.draggable = true;
+    return imgElem;
+}
+
 /**
  * @param {any} e
  */
 export function handleDragStart(e) {
-    pieceTarget.set(e.target);
-    draggedPiece.set(e.target.id);
+    let imgElemCopy = copyElementOver(e.target);
+
+    pieceTarget.set(imgElemCopy);
+    draggedPiece.set(imgElemCopy.id);
     e.dataTransfer.dropEffect = "move";
 }
+
 /**
  * @param {any} e
  */

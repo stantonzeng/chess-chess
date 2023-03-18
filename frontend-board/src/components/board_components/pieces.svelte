@@ -20,11 +20,12 @@
 
     const pieceKeyUnderscore = pieceKey.slice(0, 5) + "_" + pieceKey.slice(6);
     let pieceKeyID = pieceKeyUnderscore.concat('_', pieceNumber.toString());
+    let isSideClass = sidePiece ? "side_piece" : "piece"
 
 </script>
 
     <img 
-    class = "piece {pieceKeyID}"
+    class = "{isSideClass} {pieceKeyID}"
     id = {pieceKey}
     src = {pieceValue} 
     alt = {pieceKey}
@@ -33,8 +34,8 @@
     on:dragend = {handleDragEnd}/>
 
 <style>
-    .piece:hover{
-        background: orange;
-        cursor: pointer;
-    }
+    :global(.piece):hover, :global(.side_piece):hover {
+    background: orange;
+    cursor: pointer;
+}
 </style>

@@ -19,19 +19,6 @@
     let dragPieceUnderscore = '';
 
     /**
-	 * @param {HTMLImageElement} imgElem
-	 * @param {any} pieceTarget
-     * Deep copy of the HtmlImageElement
-	 */
-    function copyElementOver(imgElem, pieceTarget){
-        imgElem.className = pieceTarget.getAttribute('class');
-        imgElem.id = pieceTarget.getAttribute('id');
-        imgElem.src = pieceTarget.getAttribute('src');
-        imgElem.alt = pieceTarget.getAttribute('alt');
-        imgElem.draggable = true;
-    }
-    
-    /**
      * @param {any} e
      * When we drop the piece we are hovering, if they are a sidePiece, then we will create a DEEP copy
      * of the HTMLImageElement and place it on the board.
@@ -43,12 +30,9 @@
     function customHandleDragDrop(e) {
         if(draggedPieceType != 'None') {
             
-            if($pieceTarget){ 
-                let htmlElement = document.createElement("img");
-                //todo make htmlElement hold the correct class (im talking black_bishop_0 -> black_bishop_1)
-                copyElementOver(htmlElement, get(pieceTarget));  
-                e.target.append(htmlElement);
-            } 
+            e.target.append($pieceTarget);
+
+            console.log(e.target);
 
             // Updates the piece count
             let val = get(piecesCount);
