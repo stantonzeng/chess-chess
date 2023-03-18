@@ -2,23 +2,22 @@
 	import Tile from './board_components/tile.svelte';
 	import Pieces from './board_components/pieces.svelte';
 	import { piecesID } from './board_components/pieces/piecesSetup';
-	import { draggedPiece } from './drag';
+	import { piecesCount, draggedPiece } from './drag';
 	import { board } from './boardSetup';
-	
-	let pieceBeingDragged = 'None';
-	draggedPiece.subscribe((_draggedPiece) => pieceBeingDragged = _draggedPiece);
-	
 </script>
 
-<div class = "board_and_pieces">
-	<h2> Dragging Piece : {pieceBeingDragged}</h2>
+<div
+ class = "board_and_pieces">
+	<h2> Dragging Piece : {$draggedPiece}</h2>
 	<!------------------------------TILES START------------------------------>
-	<div class = "board">
-		<!--This if statement is used just to remove the undefined board1 error-->
+	<div 
+	class = "board">
 		{#if board.boardLabels}
-			<!--Loop through the boardLabels and assign them to each tile-->
 			{#each board.boardLabels as bl}
-				<Tile name = {bl.lbl} color = {bl.clr} bind:draggedPieceType = {pieceBeingDragged}/>
+				<Tile 
+				name = {bl.lbl} 
+				color = {bl.clr} 
+				bind:draggedPieceType = {$draggedPiece}/>
 			{/each}
 		{/if}
 	</div>
@@ -26,14 +25,17 @@
 
 
 	<!------------------------------PIECES START------------------------------>
-	<!--This holds the pieces grid and centers it-->
-	<div class = "pieces">
-		<!--Grids the pieces on the side-->
+	<div 
+	class = "pieces">
 		<div 
 		class = "pieces_grid">
 			{#if piecesID.pieceMap}
 				{#each [...piecesID.pieceMap] as [key, value]}
-					<Pieces pieceKey = {key} pieceValue = {value}/>
+					<Pieces 
+					pieceKey = {key} 
+					pieceValue = {value} 
+					pieceNumber = {$piecesCount.get({key})} 
+					sidePiece = {true}/>
 				{/each}
 			{/if}
 		</div>
@@ -72,12 +74,5 @@
 		grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr; 
 		gap: 0px 0px; 
 		background-color: bisque;
-		/* grid-template-areas: 
-			". ."
-			". ."
-			". ."
-			". ."
-			". ."
-			". .";  */
 	}
 </style>

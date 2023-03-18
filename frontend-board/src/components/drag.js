@@ -1,33 +1,37 @@
 import { writable, get } from "svelte/store";
 import { piecesID } from "./board_components/pieces/piecesSetup";
 
+/* --------------------------------WRITTABLE VARIABLES START-------------------------------- */
+
+/**
+ * @type {any}
+ */
+let htmlImgEle;
+
+//@todo Possibly put pieceMap back into piecesSetup and export it here? Might clean up
 let pieceMap = new Map;
 for(let i = 0; i < piecesID.pieceHolderNameUnderscore.length; i++){
     pieceMap.set(piecesID.pieceHolderNameUnderscore[i], 0);
 }
-export let piecesCount = writable(pieceMap);
 
-// export let piecesCount = writable({
-//     Black_Bishop: "0",
-//     White_Bishop: "0", 
-//     Black_King: "0",
-//     White_King: "0", 
-//     Black_Knight: "0",
-//     White_Knight: "0", 
-//     Black_Pawn: "0", 
-//     White_Pawn: "0", 
-//     Black_Queen: "0", 
-//     White_Queen: "0", 
-//     Black_Rook: "0", 
-//     White_Rook: "0"
-// });
+/* --------------------------------WRITTABLE VARIABLES END-------------------------------- */
+
+/* --------------------------------WRITTABLES START-------------------------------- */
+
+export let piecesCount = writable(pieceMap);
 
 export let draggedPiece = writable('None');
 
+export let pieceTarget = writable(htmlImgEle);
+
+/* --------------------------------WRITTABLES END-------------------------------- */
+
+/* --------------------------------FUNCTIONS START-------------------------------- */
 /**
  * @param {any} e
  */
 export function handleDragStart(e) {
+    pieceTarget.set(e.target);
     draggedPiece.set(e.target.id);
     e.dataTransfer.dropEffect = "move";
 }
@@ -35,7 +39,7 @@ export function handleDragStart(e) {
  * @param {any} e
  */
 export function handleDragEnd(e) {
-    // console.log("Letting go of piece", get(draggedPiece));
+    pieceTarget.set(htmlImgEle);
     draggedPiece.set('None');
 }
 
@@ -49,6 +53,7 @@ export function handleDragEnter(e) {
         // console.log("Entering ", e.target.getAttribute('id'), " with ", get(draggedPiece));
     }
 }
+
 /**
  * @param {any} e
  */
@@ -63,3 +68,5 @@ export function handleDragLeave(e) {
 export function handleDragOver(e) {
     e.preventDefault();
 }
+
+/* --------------------------------FUNCTIONS END-------------------------------- */
