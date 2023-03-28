@@ -1,6 +1,6 @@
 <script>
     import { get } from 'svelte/store';
-    import { piecesCount, pieceTarget, handleDragStart, handleDragEnter, handleDragLeave, handleDragOver } from "../drag";
+    import { piecesCount, pieceTarget, isItASidePiece, handleDragStart, handleDragEnter, handleDragLeave, handleDragOver } from "../drag";
     /**
      * @type {string}
      */
@@ -29,16 +29,28 @@
      */
     function customHandleDragDrop(e) {
         if(draggedPieceType != 'None') {
+
+            let node = document.getElementById(`${e.target.id}`);
             
-            e.target.append($pieceTarget);
+            if(node?.firstChild && node.children[0].className == "hoverPiece") 
+            {
+                node.removeChild(node.firstChild);
+            }
 
-            console.log(e.target);
+            console.log(e.target)
+            if(e.target.className.slice(0,4) == "tile" && node?.children.length == 0)
+            {
+                e.target.append($pieceTarget);
+            }
 
-            // Updates the piece count
-            let val = get(piecesCount);
-            dragPieceUnderscore = draggedPieceType.slice(0, 5) + "_" + draggedPieceType.slice(6);
-            val.set(dragPieceUnderscore, val.get(dragPieceUnderscore)+1);
-            piecesCount.set(val);
+            if($isItASidePiece){// Updates the piece count if its a side piece
+                let val = get(piecesCount);
+                dragPieceUnderscore = draggedPieceType.slice(0, 5) + "_" + draggedPieceType.slice(6);
+                val.set(dragPieceUnderscore, val.get(dragPieceUnderscore)+1);
+                piecesCount.set(val);
+            }
+            
+            
         }
     }
 

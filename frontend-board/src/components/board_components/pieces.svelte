@@ -1,5 +1,5 @@
 <script>
-    import { piecesCount, handleDragStart, handleDragEnd} from '../drag'
+    import { piecesCount, handleDrag, handleDragStart, handleDragEnd, handleMouseDown, handleMouseUp, handleMouseMove} from '../drag'
     import { piecesID } from './pieces/piecesSetup';
     /**
 	 * @type {string}
@@ -29,13 +29,23 @@
     id = {pieceKey}
     src = {pieceValue} 
     alt = {pieceKey}
-    draggable="true" 
-    on:dragstart = {handleDragStart}
-    on:dragend = {handleDragEnd}/>
+    draggable="true"
+    on:mousedown = {handleMouseDown}
+    on:mouseup = {handleMouseUp}
+    on:mousemove={handleMouseMove}
+    on:dragstart= {handleDragStart}
+    on:drag={handleDrag}
+    on:dragend={handleDragEnd}
+    on:drop={(e) => e.preventDefault()}/>
 
 <style>
     :global(.piece):hover, :global(.side_piece):hover {
-    background: orange;
-    cursor: pointer;
-}
+        background: rgb(109, 150, 150);
+        cursor: pointer;
+    }
+
+    :global(.hoverPiece){
+        opacity: 0.5;
+        pointer-events: none;
+    }
 </style>

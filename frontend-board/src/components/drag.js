@@ -1,5 +1,6 @@
 import { writable, get } from "svelte/store";
 import { piecesID } from "./board_components/pieces/piecesSetup";
+import $ from 'jquery';
 
 /* --------------------------------WRITTABLE VARIABLES START-------------------------------- */
 
@@ -26,11 +27,46 @@ export let draggedPiece = writable('None');
 
 export let pieceTarget = writable(htmlImgEle);
 
+export let isItASidePiece = writable(false);
+
 /* --------------------------------WRITTABLES END-------------------------------- */
 
 
 
 /* --------------------------------FUNCTIONS START-------------------------------- */
+
+function checkDraggedPiece(){
+    if(get(draggedPiece) != 'None')
+        return true;
+    return false;
+}
+
+function getDraggedPiece(){
+    return get(draggedPiece)
+}
+
+function getPiecesCount(){
+    return get(piecesCount);
+}
+
+function getPieceTarget(){
+    return get(pieceTarget);
+}
+
+function getIsItASidePiece(){
+    return get(isItASidePiece);
+}
+
+/**
+ * @param {any} e
+ */
+function getOffset(e) {
+    const rect = e.getBoundingClientRect();
+    return {
+    left: rect.left + window.scrollX,
+    top: rect.top + window.scrollY
+    };
+}
 
 /**
  * @param {string} classString
@@ -39,10 +75,14 @@ export let pieceTarget = writable(htmlImgEle);
  */
 function findPieceTypeNumber(classString){
     const isSideClass = classString.slice(0, 4);
-    if(isSideClass === "side"){
+    if(isSideClass === "side")
+    {
+        
         const pieceType = classString.slice(11, 23);
         let newClassString = classString.slice(5, 24);
-        return newClassString.concat(get(piecesCount).get(pieceType).toString());
+        var pcecnt = getPiecesCount();
+
+        return newClassString.concat(pcecnt.get(pieceType).toString());
     }
     return classString;
 }
@@ -58,36 +98,148 @@ function copyElementOver(pieceTarget){
     imgElem.src = pieceTarget.getAttribute('src');
     imgElem.alt = pieceTarget.getAttribute('alt');
     imgElem.draggable = true;
+    imgElem.addEventListener("dragstart", handleDragStart)
+    imgElem.addEventListener("dragend", handleDragEnd)
+    imgElem.addEventListener("mousedown", handleMouseDown)
+    imgElem.addEventListener("mouseup", handleMouseUp)
     return imgElem;
+}
+
+var dx = 0
+var dy = 0
+/**
+ * @type {any}
+ */
+var draggedItem = undefined;
+
+/**
+ * @param {any} e
+ */
+export function handleDrag(e){
+    // draggedItem.style.left = e.ClientX - dx;
+    // draggedItem.style.top = e.ClientY - dy;
 }
 
 /**
  * @param {any} e
  */
 export function handleDragStart(e) {
-    let imgElemCopy = copyElementOver(e.target);
+    // e.preventDefault();
 
-    pieceTarget.set(imgElemCopy);
-    draggedPiece.set(imgElemCopy.id);
-    e.dataTransfer.dropEffect = "move";
+    // draggedItem = e.target;
+    // dx = e.clientX - draggedItem.getBoundingClientRect().x;
+    // dy = e.clientY - draggedItem.getBoundingClientRect().y;
+    // draggedItem.style.position = 'absolute';
+
+    // console.log(e.target);
+    
+    let imgElemCopy = copyElementOver(e.target);
+    if(e.target.getAttribute('class').slice(0, 4) === "side"){ //todo test this out
+        isItASidePiece.set(true);
+        pieceTarget.set(imgElemCopy);
+        // console.log(imgElemCopy);
+    }
+    else{
+        pieceTarget.set(e.target);
+    }
+    draggedPiece.set(e.target.id);
+    // e.dataTransfer.dropEffect = "move";
 }
 
 /**
  * @param {any} e
  */
 export function handleDragEnd(e) {
+    isItASidePiece.set(false);
     pieceTarget.set(htmlImgEle);
     draggedPiece.set('None');
 }
 
 /**
-     * @param {any} e
-     */
+ * @type {any}
+ */
+let piece_temp = null;
+/**
+ * @param {any} e
+ */
+export function handleMouseDown(e) {
+    // e.preventDefault();
+
+    // piece_temp = copyElementOver(e.target);
+    // console.log(piece_temp)
+    
+    // console.log(mousePosition)
+    // console.log(e.target)
+    // console.log(getOffset(e.target));
+}
+
+/**
+ * @param {any} e
+ */
+export function handleMouseMove(e){
+    // let mousePosition = {
+    //     x: e.clientX,
+    //     y: e.clientY
+    // }
+
+    // if(piece_temp != null){
+    //     console.log("hello");
+    //     piece_temp.style.position = "absolute";
+    //     piece_temp.style.left = mousePosition.x + 'px';
+    //     piece_temp.style.top = mousePosition.y + 'px';
+    //     console.log(piece_temp)
+    // }
+}
+
+/**
+ * @param {any} e
+ */
+export function handleMouseUp(e) {
+    piece_temp = null;
+    console.log(e.target)
+    pieceTarget.set(htmlImgEle);
+    draggedPiece.set('None');
+}
+
+/**
+ * @type {any}
+ */
+var enterTargetStorage_1 = null;
+
+/**
+ * @type {any}
+ */
+var enterTargetStorage_2 = null;
+
+/**
+ * @type {any}
+ */
+var enterChildTargetStorage = null;
+/**
+ * @param {any} e
+ */
 export function handleDragEnter(e) {
-    if(get(draggedPiece) != 'None'){
+    
+    if(checkDraggedPiece() && e.target != enterChildTargetStorage)
+    {
+
+        enterTargetStorage_2 = enterTargetStorage_1;
+        enterTargetStorage_1 = e.target;
+
         e.dataTransfer.dropEffect = "move";
         e.dataTransfer.setData("text", e.target.getAttribute('id'));
-        // console.log("Entering ", e.target.getAttribute('id'), " with ", get(draggedPiece));
+        
+        let imgElemCopy = copyElementOver(getPieceTarget());
+        imgElemCopy.className = "hoverPiece";
+
+        if(e.target.children.length < 1)
+        {
+
+            e.target.append(imgElemCopy);
+            enterChildTargetStorage = imgElemCopy;
+        
+        }
+
     }
 }
 
@@ -95,7 +247,17 @@ export function handleDragEnter(e) {
  * @param {any} e
  */
 export function handleDragLeave(e) {
-    // console.log("You left the " + e.target.getAttribute('id'));
+    if(checkDraggedPiece())
+    {
+
+        let node = document.getElementById(`${e.target.id}`);
+        if (((enterTargetStorage_2 && enterTargetStorage_2 === e.target) 
+           ||(enterTargetStorage_1 && enterTargetStorage_1 === e.target)) 
+           && node && node.firstChild && node?.children[0].className == "hoverPiece") 
+        {
+            node.removeChild(node.firstChild);
+        } 
+    }
 }
 /**
  * @param {any} e
