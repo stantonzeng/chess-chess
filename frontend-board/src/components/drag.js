@@ -1,6 +1,5 @@
 import { writable, get } from "svelte/store";
 import { piecesID } from "./board_components/pieces/piecesSetup";
-import $ from 'jquery';
 
 /* --------------------------------WRITTABLE VARIABLES START-------------------------------- */
 
@@ -21,9 +20,9 @@ for(let i = 0; i < piecesID.pieceHolderNameUnderscore.length; i++){
 
 /* --------------------------------WRITTABLES START-------------------------------- */
 
-export let piecesCount = writable(pieceMap);
+export let piecesMapCount = writable(pieceMap);
 
-export let draggedPiece = writable('None');
+export let pieceDraggedName = writable('None');
 
 export let pieceTarget = writable(htmlImgEle);
 
@@ -35,18 +34,18 @@ export let isItASidePiece = writable(false);
 
 /* --------------------------------FUNCTIONS START-------------------------------- */
 
-function checkDraggedPiece(){
-    if(get(draggedPiece) != 'None')
+function checkPieceDraggedName(){
+    if(get(pieceDraggedName) != 'None')
         return true;
     return false;
 }
 
-function getDraggedPiece(){
-    return get(draggedPiece)
+function getPieceDraggedName(){
+    return get(pieceDraggedName)
 }
 
-function getPiecesCount(){
-    return get(piecesCount);
+function getPiecesMapCount(){
+    return get(piecesMapCount);
 }
 
 function getPieceTarget(){
@@ -77,10 +76,9 @@ function findPieceTypeNumber(classString){
     const isSideClass = classString.slice(0, 4);
     if(isSideClass === "side")
     {
-        
         const pieceType = classString.slice(11, 23);
         let newClassString = classString.slice(5, 24);
-        var pcecnt = getPiecesCount();
+        var pcecnt = getPiecesMapCount();
 
         return newClassString.concat(pcecnt.get(pieceType).toString());
     }
@@ -124,26 +122,16 @@ export function handleDrag(e){
  * @param {any} e
  */
 export function handleDragStart(e) {
-    // e.preventDefault();
-
-    // draggedItem = e.target;
-    // dx = e.clientX - draggedItem.getBoundingClientRect().x;
-    // dy = e.clientY - draggedItem.getBoundingClientRect().y;
-    // draggedItem.style.position = 'absolute';
-
-    // console.log(e.target);
     
     let imgElemCopy = copyElementOver(e.target);
     if(e.target.getAttribute('class').slice(0, 4) === "side"){ //todo test this out
         isItASidePiece.set(true);
         pieceTarget.set(imgElemCopy);
-        // console.log(imgElemCopy);
     }
     else{
         pieceTarget.set(e.target);
     }
-    draggedPiece.set(e.target.id);
-    // e.dataTransfer.dropEffect = "move";
+    pieceDraggedName.set(e.target.id);
 }
 
 /**
@@ -152,13 +140,14 @@ export function handleDragStart(e) {
 export function handleDragEnd(e) {
     isItASidePiece.set(false);
     pieceTarget.set(htmlImgEle);
-    draggedPiece.set('None');
+    pieceDraggedName.set('None');
 }
 
 /**
  * @type {any}
  */
 let piece_temp = null;
+
 /**
  * @param {any} e
  */
@@ -196,9 +185,8 @@ export function handleMouseMove(e){
  */
 export function handleMouseUp(e) {
     piece_temp = null;
-    console.log(e.target)
     pieceTarget.set(htmlImgEle);
-    draggedPiece.set('None');
+    pieceDraggedName.set('None');
 }
 
 /**
@@ -220,7 +208,7 @@ var enterChildTargetStorage = null;
  */
 export function handleDragEnter(e) {
     
-    if(checkDraggedPiece() && e.target != enterChildTargetStorage)
+    if(checkPieceDraggedName() && e.target != enterChildTargetStorage)
     {
 
         enterTargetStorage_2 = enterTargetStorage_1;
@@ -247,7 +235,7 @@ export function handleDragEnter(e) {
  * @param {any} e
  */
 export function handleDragLeave(e) {
-    if(checkDraggedPiece())
+    if(checkPieceDraggedName())
     {
 
         let node = document.getElementById(`${e.target.id}`);

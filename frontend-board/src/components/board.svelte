@@ -2,13 +2,13 @@
 	import Tile from './board_components/tile.svelte';
 	import Pieces from './board_components/pieces.svelte';
 	import { piecesID } from './board_components/pieces/piecesSetup';
-	import { piecesCount, draggedPiece } from './drag';
+	import { piecesMapCount, pieceDraggedName } from './drag';
 	import { board } from './boardSetup';
 </script>
 
 <div
  class = "board_and_pieces">
-	<h2> Dragging Piece : {$draggedPiece}</h2>
+	<h2> Dragging Piece : {$pieceDraggedName}</h2>
 	<!------------------------------TILES START------------------------------>
 	<div 
 	class = "board">
@@ -17,7 +17,7 @@
 				<Tile 
 				name = {bl.lbl} 
 				color = {bl.clr} 
-				bind:draggedPieceType = {$draggedPiece}/>
+				bind:pieceDraggedNameType = {$pieceDraggedName}/>
 			{/each}
 		{/if}
 	</div>
@@ -34,7 +34,7 @@
 					<Pieces 
 					pieceKey = {key} 
 					pieceValue = {value} 
-					pieceNumber = {$piecesCount.get({key})} 
+					pieceNumber = {$piecesMapCount.get({key})} 
 					sidePiece = {true}/>
 				{/each}
 			{/if}

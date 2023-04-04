@@ -1,6 +1,6 @@
 <script>
     import { get } from 'svelte/store';
-    import { piecesCount, pieceTarget, isItASidePiece, handleDragStart, handleDragEnter, handleDragLeave, handleDragOver } from "../drag";
+    import { piecesMapCount, pieceTarget, isItASidePiece, handleDragStart, handleDragEnter, handleDragLeave, handleDragOver } from "../drag";
     /**
      * @type {string}
      */
@@ -14,7 +14,7 @@
     /**
      * @type {string}
      */
-     export let draggedPieceType;
+     export let pieceDraggedNameType;
 
     let dragPieceUnderscore = '';
 
@@ -28,7 +28,7 @@
      * @todo Need to add the Droppable bool back in to make sure if a piece can drop in properly
      */
     function customHandleDragDrop(e) {
-        if(draggedPieceType != 'None') {
+        if(pieceDraggedNameType != 'None') {
 
             let node = document.getElementById(`${e.target.id}`);
             
@@ -44,10 +44,10 @@
             }
 
             if($isItASidePiece){// Updates the piece count if its a side piece
-                let val = get(piecesCount);
-                dragPieceUnderscore = draggedPieceType.slice(0, 5) + "_" + draggedPieceType.slice(6);
+                let val = get(piecesMapCount);
+                dragPieceUnderscore = pieceDraggedNameType.slice(0, 5) + "_" + pieceDraggedNameType.slice(6);
                 val.set(dragPieceUnderscore, val.get(dragPieceUnderscore)+1);
-                piecesCount.set(val);
+                piecesMapCount.set(val);
             }
             
             
@@ -69,7 +69,7 @@
             <Piece 
             pieceKey = {dragPiece} 
             pieceValue = {piecesID.pieceMap?.get(`${dragPiece}`)}
-            pieceNumber = {get(piecesCount).get(dragPieceUnderscore)}/>
+            pieceNumber = {get(piecesMapCount).get(dragPieceUnderscore)}/>
         {/if} -->
     </div>
 

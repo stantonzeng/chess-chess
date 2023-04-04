@@ -1,6 +1,5 @@
 <script>
-    import { piecesCount, handleDrag, handleDragStart, handleDragEnd, handleMouseDown, handleMouseUp, handleMouseMove} from '../drag'
-    import { piecesID } from './pieces/piecesSetup';
+    import { handleDrag, handleDragStart, handleDragEnd, handleMouseDown, handleMouseUp, handleMouseMove} from '../drag'
     /**
 	 * @type {string}
 	 */
@@ -30,11 +29,7 @@
     src = {pieceValue} 
     alt = {pieceKey}
     draggable="true"
-    on:mousedown = {handleMouseDown}
-    on:mouseup = {handleMouseUp}
-    on:mousemove={handleMouseMove}
     on:dragstart= {handleDragStart}
-    on:drag={handleDrag}
     on:dragend={handleDragEnd}
     on:drop={(e) => e.preventDefault()}/>
 
